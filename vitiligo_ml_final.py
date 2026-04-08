@@ -1,3 +1,10 @@
+
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.cluster import KMeans
+import pandas as pd
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🧬 Background",
     "🎯 Objective",
@@ -152,6 +159,6 @@ with tab4:
 # -----------------------------
 with tab5:
     st.header("Team Members")
-    st.write("""DISHA THORAT
+    st.write("""DISHA THORAT,Shreya Bhore
 
 """)
