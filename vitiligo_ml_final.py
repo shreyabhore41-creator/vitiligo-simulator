@@ -5,9 +5,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.cluster import KMeans
 import pandas as pd
 
-# PDF
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
 
 # -----------------------------
 # SIDEBAR
@@ -250,10 +247,6 @@ Risk Score: {risk_score:.2f}
 Cluster: {cluster_map.get(cluster)}
 """
 
-create_pdf(report_text)
-
-with open("report.pdf", "rb") as f:
-    st.download_button("📄 Download Report", f, file_name="vitiligo_report.pdf")
 
 # -----------------------------
 # DISCLAIMER
