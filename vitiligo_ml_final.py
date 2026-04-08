@@ -97,7 +97,7 @@ with tab5:
 
     st.write("""
 - Disha Thorat  
-(Add team members if any)
+- Shreya Bhore
 
 This project is developed as part of academic coursework in bioinformatics.
     """)
