@@ -5,9 +5,10 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.cluster import KMeans
 import pandas as pd
 
-# PDF
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+# ✅ NEW PDF IMPORTS
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
 
 # -----------------------------
 # SIDEBAR
@@ -54,54 +55,45 @@ def simulate(t, i, s, tr, stt):
 # -----------------------------
 # USER PROFILE
 # -----------------------------
-with st.container():
-    st.subheader('Patient Profile')
+st.subheader('Patient Profile')
+col1, col2 = st.columns(2)
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fname = st.text_input('First name')
-
-    with col2:
-        lname = st.text_input('Last name')
+with col1:
+    fname = st.text_input('First name')
+with col2:
+    lname = st.text_input('Last name')
 
 # -----------------------------
-# SIMULATION RESULTS
+# SIMULATION GRAPH
 # -----------------------------
-with st.container():
-    st.subheader("Simulation Results")
+st.subheader("Simulation Results")
 
-    data = simulate(100, immune, stress, treatment, start)
+data = simulate(100, immune, stress, treatment, start)
 
-    fig, ax = plt.subplots()
-    ax.plot(data)
-    ax.set_xlabel("Time Steps")
-    ax.set_ylabel("Melanocyte Level (%)")
-    ax.set_title("Disease Progression")
+fig, ax = plt.subplots()
+ax.plot(data)
+ax.set_xlabel("Time Steps")
+ax.set_ylabel("Melanocyte Level (%)")
+ax.set_title("Disease Progression")
 
-    st.pyplot(fig)
+st.pyplot(fig)
 
-    # ✅ Added explanation
-    st.caption("Downward trend = melanocyte loss (depigmentation). Stabilization = treatment effect.")
+st.caption("Downward trend = melanocyte loss (depigmentation). Stabilization = treatment effect.")
 
 # -----------------------------
 # COMPARISON
 # -----------------------------
-with st.container():
-    st.subheader("Treatment Comparison")
+st.subheader("Treatment Comparison")
 
-    early = simulate(100, immune, stress, treatment, 10)
-    late = simulate(100, immune, stress, treatment, 60)
+early = simulate(100, immune, stress, treatment, 10)
+late = simulate(100, immune, stress, treatment, 60)
 
-    fig2, ax2 = plt.subplots()
-    ax2.plot(early, label="Early Treatment")
-    ax2.plot(late, label="Late Treatment")
-    ax2.legend()
-    ax2.set_xlabel("Time Steps")
-    ax2.set_ylabel("Melanocyte Level (%)")
-    ax2.set_title("Effect of Treatment Timing")
+fig2, ax2 = plt.subplots()
+ax2.plot(early, label="Early Treatment")
+ax2.plot(late, label="Late Treatment")
+ax2.legend()
 
-    st.pyplot(fig2)
+st.pyplot(fig2)
 
 # -----------------------------
 # ML MODEL
@@ -125,8 +117,6 @@ pred = model.predict([[immune, stress, treatment, start]])[0]
 
 st.subheader("Predicted Outcome")
 st.write(f"Final Melanocyte Level: {pred:.2f}")
-
-# ✅ Added meaning
 st.caption("Higher value = healthier pigmentation, lower = more depigmentation")
 
 # -----------------------------
@@ -137,123 +127,71 @@ kmeans.fit(X)
 
 cluster = kmeans.predict([[immune, stress, treatment, start]])[0]
 
-st.subheader("Patient Category")
-
-# ✅ Improved cluster output
 cluster_map = {
     0: "Slow progression group",
     1: "Moderate progression group",
     2: "Aggressive progression group"
 }
 
-st.write(cluster_map.get(cluster, "Unknown"))
+cluster_text = cluster_map.get(cluster)
+
+st.subheader("Patient Category")
+st.write(cluster_text)
 
 # -----------------------------
-# ANALYSIS
+# RISK SCORE
 # -----------------------------
-with st.container():
-    st.subheader("Analysis")
-
-    if pred > 70:
-        st.success("Mild condition")
-    elif pred > 40:
-        st.warning("Moderate progression")
-    else:
-        st.error("Severe condition")
-
-# -----------------------------
-# SMART INTERPRETATION (NEW)
-# -----------------------------
-st.subheader("🧠 Smart Interpretation")
-
-if immune > 0.7 and stress > 0.6:
-    st.warning("High immune attack and oxidative stress may accelerate depigmentation.")
-elif treatment > 0.6 and start < 30:
-    st.success("Early and strong treatment is helping control disease progression.")
-elif stress > 0.6:
-    st.info("Oxidative stress is a key contributing factor.")
-else:
-    st.info("Condition appears relatively stable.")
-
-# -----------------------------
-# RISK SCORE (NEW)
-# -----------------------------
-st.subheader("🎯 Risk Score")
-
 risk_score = (immune * 0.4 + stress * 0.3 + (1 - treatment) * 0.3) * 100
-st.write(f"Risk Score: {risk_score:.2f} / 100")
 
 # -----------------------------
-# WHAT-IF ANALYSIS (NEW)
+# PDF FUNCTION (UPDATED 🔥)
 # -----------------------------
-st.subheader("🔮 What-If Analysis")
+def create_pdf():
+    fig.savefig("graph.png")  # save graph
 
-reduced_stress = max(stress - 0.2, 0)
-new_pred = model.predict([[immune, reduced_stress, treatment, start]])[0]
-
-st.write(f"If stress is reduced, melanocyte level improves by **{new_pred - pred:.2f}**")
-
-# -----------------------------
-# FEATURE IMPORTANCE
-# -----------------------------
-features = ['Immune', 'Stress', 'Treatment', 'Start']
-importance = model.feature_importances_
-
-df = pd.DataFrame({'Feature':features, 'Importance':importance})
-st.bar_chart(df.set_index('Feature'))
-
-# -----------------------------
-# SUMMARY
-# -----------------------------
-if pred < 40:
-    risk = "High Risk"
-elif pred < 70:
-    risk = "Moderate Risk"
-else:
-    risk = "Low Risk"
-
-if pred > 70:
-    insight = "Disease progression is controlled. Treatment is effective."
-elif pred > 40:
-    insight = "Moderate progression observed. Early intervention could improve outcome."
-else:
-    insight = "Rapid depigmentation detected. Stronger or earlier treatment required."
-
-st.success(f"""
-Summary:
-
-- Predicted Melanocyte Level: {pred:.2f}
-- Risk Level: {risk}
-
-Interpretation:
-{insight}
-""")
-
-# -----------------------------
-# PDF DOWNLOAD (NEW)
-# -----------------------------
-def create_pdf(text):
     doc = SimpleDocTemplate("report.pdf")
     styles = getSampleStyleSheet()
     content = []
 
-    for line in text.split("\n"):
-        content.append(Paragraph(line, styles["Normal"]))
-        content.append(Spacer(1, 10))
+    content.append(Paragraph("<b>Vitiligo Simulation Report</b>", styles["Title"]))
+    content.append(Spacer(1, 15))
+
+    name = f"{fname} {lname}".strip()
+    content.append(Paragraph(f"<b>Name:</b> {name if name else 'Not provided'}", styles["Normal"]))
+    content.append(Spacer(1, 10))
+
+    content.append(Paragraph(f"<b>Predicted Level:</b> {pred:.2f}", styles["Normal"]))
+    content.append(Paragraph(f"<b>Risk Score:</b> {risk_score:.2f}", styles["Normal"]))
+    content.append(Paragraph(f"<b>Cluster:</b> {cluster_text}", styles["Normal"]))
+    content.append(Spacer(1, 15))
+
+    content.append(Paragraph("<b>Disease Progression Graph</b>", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+
+    img = Image("graph.png", width=5*inch, height=3*inch)
+    content.append(img)
+
+    content.append(Spacer(1, 15))
+
+    if pred > 70:
+        text = "Condition is mild. Treatment is effective."
+    elif pred > 40:
+        text = "Moderate progression observed."
+    else:
+        text = "Severe depigmentation detected."
+
+    content.append(Paragraph("<b>Interpretation:</b>", styles["Heading2"]))
+    content.append(Paragraph(text, styles["Normal"]))
 
     doc.build(content)
 
-report_text = f"""
-Name: {fname} {lname}
-Predicted Level: {pred:.2f}
-Risk Score: {risk_score:.2f}
-Cluster: {cluster_map.get(cluster)}
-"""
-
-create_pdf(report_text)
+# -----------------------------
+# DOWNLOAD BUTTON
+# -----------------------------
+create_pdf()
 
 with open("report.pdf", "rb") as f:
-    st.download_button("📄 Download Report", f, file_name="vitiligo_report.pdf")
+    st.download_button("📄 Download Full Report", f, file_name="vitiligo_report.pdf")
 
 # -----------------------------
 # DISCLAIMER
