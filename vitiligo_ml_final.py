@@ -190,7 +190,7 @@ with tab3:
         st.error("Severe condition")
 
     # SMART INTERPRETATION
-    st.subheader("?? Smart Interpretation")
+    st.subheader("Smart Interpretation")
     if immune > 0.7 and stress > 0.6:
         st.warning("High immune attack and oxidative stress may accelerate depigmentation.")
     elif treatment > 0.6 and start < 30:
@@ -201,12 +201,12 @@ with tab3:
         st.info("Condition appears relatively stable.")
 
     # RISK SCORE
-    st.subheader("?? Risk Score")
+    st.subheader("Risk Score")
     risk_score = (immune * 0.4 + stress * 0.3 + (1 - treatment) * 0.3) * 100
     st.write(f"Risk Score: {risk_score:.2f} / 100")
 
     # WHAT-IF
-    st.subheader("?? What-If Analysis")
+    st.subheader("What-If Analysis")
     reduced_stress = max(stress - 0.2, 0)
     new_pred = model.predict([[immune, reduced_stress, treatment, start]])[0]
     st.write(f"If stress is reduced, melanocyte level improves by **{new_pred - pred:.2f}**")
