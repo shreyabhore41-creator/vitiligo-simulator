@@ -15,7 +15,7 @@ def get_base64(image_path):
         return base64.b64encode(f.read()).decode()
 
 # GIVE YOUR IMAGE PATH HERE
-img = get_base64("C:/Users/lenovo/Desktop/backdrop1.jpeg")
+img = get_base64("backdrop1.jpeg")
 
 # APPLY BACKGROUND
 st.markdown(f"""
