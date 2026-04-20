@@ -15,7 +15,7 @@ def get_base64(image_path):
         return base64.b64encode(f.read()).decode()
 
 # GIVE YOUR IMAGE PATH HERE
-img = get_base64("backdrop1.jpeg")
+img = get_base64("C:/Users/lenovo/Desktop/backdrop1.jpeg")
 
 # APPLY BACKGROUND
 st.markdown(f"""
@@ -57,8 +57,12 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab1:
     st.header("Background")
     st.write("""
-Vitiligo is a skin condition where melanocytes are destroyed, leading to white patches.
-This tool simulates disease progression using stochastic modeling and machine learning.
+This tool is a computational model designed to simulate the progression of vitiligo using a combination of stochastic modeling and machine learning techniques. It focuses on key biological factors such as immune response, oxidative stress, and treatment intervention to predict changes in melanocyte levels over time.
+
+By allowing users to adjust parameters like immune attack intensity, stress levels, and treatment timing, the tool provides a dynamic visualization of disease progression. It also incorporates predictive analytics to estimate outcomes and classify disease severity.
+
+Overall, this platform serves as an educational and analytical tool to better understand vitiligo progression and evaluate potential treatment strategies in a simulated environment.
+
 """)
 
 # -----------------------------
@@ -190,7 +194,7 @@ with tab3:
         st.error("Severe condition")
 
     # SMART INTERPRETATION
-    st.subheader("Smart Interpretation")
+    st.subheader("?? Smart Interpretation")
     if immune > 0.7 and stress > 0.6:
         st.warning("High immune attack and oxidative stress may accelerate depigmentation.")
     elif treatment > 0.6 and start < 30:
@@ -201,12 +205,12 @@ with tab3:
         st.info("Condition appears relatively stable.")
 
     # RISK SCORE
-    st.subheader("Risk Score")
+    st.subheader("?? Risk Score")
     risk_score = (immune * 0.4 + stress * 0.3 + (1 - treatment) * 0.3) * 100
     st.write(f"Risk Score: {risk_score:.2f} / 100")
 
     # WHAT-IF
-    st.subheader("What-If Analysis")
+    st.subheader("?? What-If Analysis")
     reduced_stress = max(stress - 0.2, 0)
     new_pred = model.predict([[immune, reduced_stress, treatment, start]])[0]
     st.write(f"If stress is reduced, melanocyte level improves by **{new_pred - pred:.2f}**")
