@@ -4,16 +4,51 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.cluster import KMeans
 import pandas as pd
+import base64
+
+import streamlit as st
+import base64
+
+# FUNCTION to convert image to base64
+def get_base64(image_path):
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+# GIVE YOUR IMAGE PATH HERE
+img = get_base64("C:/Users/lenovo/Desktop/backdrop.jpeg")
+
+# APPLY BACKGROUND
+st.markdown(f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                      url("data:image/jpeg;base64,{img}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}}
+
+[data-testid="stSidebar"] {{
+    background: rgba(0,0,0,0.6);
+}}
+
+h1, h2, h3, h4, h5, h6, p, div, span, label {{
+    color: white !important;
+}}
+</style>
+""", unsafe_allow_html=True)
+
+
 
 # -----------------------------
 # TABS
 # -----------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🧬 Background",
-    "🎯 Objective",
-    "⚙️ Working",
-    "🧪 Applications",
-    "👩‍💻 Team"
+    "Background",
+    "Objective",
+    "Working",
+    "Applications",
+    "Team"
 ])
 
 # -----------------------------
@@ -155,7 +190,7 @@ with tab3:
         st.error("Severe condition")
 
     # SMART INTERPRETATION
-    st.subheader("🧠 Smart Interpretation")
+    st.subheader("?? Smart Interpretation")
     if immune > 0.7 and stress > 0.6:
         st.warning("High immune attack and oxidative stress may accelerate depigmentation.")
     elif treatment > 0.6 and start < 30:
@@ -166,12 +201,12 @@ with tab3:
         st.info("Condition appears relatively stable.")
 
     # RISK SCORE
-    st.subheader("🎯 Risk Score")
+    st.subheader("?? Risk Score")
     risk_score = (immune * 0.4 + stress * 0.3 + (1 - treatment) * 0.3) * 100
     st.write(f"Risk Score: {risk_score:.2f} / 100")
 
     # WHAT-IF
-    st.subheader("🔮 What-If Analysis")
+    st.subheader("?? What-If Analysis")
     reduced_stress = max(stress - 0.2, 0)
     new_pred = model.predict([[immune, reduced_stress, treatment, start]])[0]
     st.write(f"If stress is reduced, melanocyte level improves by **{new_pred - pred:.2f}**")
@@ -201,5 +236,5 @@ with tab5:
     st.header("Team Members")
     st.write("""
 - Disha Thorat  
-- Shreya Bhore 
+- Shreya Bhore  
 """)
