@@ -201,5 +201,5 @@ with tab5:
     st.header("Team Members")
     st.write("""
 - Disha Thorat  
-- Shreya Bhore  
+- Shreya Bhore 
 """)
